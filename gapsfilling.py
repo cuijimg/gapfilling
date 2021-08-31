@@ -24,13 +24,14 @@ if all([f in folders_given for f in folders]): # check if the folders are correc
         for file in files: 
             print(folder, file)
             df = pd.read_csv(file, index_col=0, encoding="utf-8")
+            df['filled']=df['content']
             for i in range(len(df)-2):
                 for j in range(i+2,len(df)):
-                    if str(df.loc[i,'content']) != '' & str(df.loc[j,'content']) != '':
-                        Ratio = fuzz.ratio(str(df.loc[i,'content']),str(df.loc[j,'content']))
+                    if (str(df.loc[i,'filled']) != '') & (str(df.loc[j,'filled']) != ''):
+                        Ratio = fuzz.ratio(str(df.loc[i,'filled']),str(df.loc[j,'filled']))
                         if Ratio >= 95:
                             for k in range(i+1,j):
-                                df.loc[k,'content'] = df.loc[j,'content']
+                                df.loc[k,'filled'] = df.loc[j,'filled']
             
             df.to_csv(file, encoding="utf-8")
                 
