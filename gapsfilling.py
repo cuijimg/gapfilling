@@ -15,6 +15,7 @@ folders= [format(i, '#04x')[2:4] for i in range(256)] # generating a list of the
 folders_given = [g.name for g in path.glob('*')]
 if all([f in folders_given for f in folders]): # check if the folders are correct
     for folder in folders:
+    # for folder in folders[12:]: #change it back later!!!
         
         path = Path( r"E:\policies_output" ) / folder
         files = list(path.glob("*.csv"))
@@ -26,12 +27,15 @@ if all([f in folders_given for f in folders]): # check if the folders are correc
             df = pd.read_csv(file, index_col=0, encoding="utf-8")
             df['filled']=df['content']
             for i in range(len(df)-2):
-                for j in range(i+2,len(df)):
-                    if (str(df.loc[i,'filled']) != '') & (str(df.loc[j,'filled']) != ''):
-                        Ratio = fuzz.ratio(str(df.loc[i,'filled']),str(df.loc[j,'filled']))
-                        if Ratio >= 95:
-                            for k in range(i+1,j):
-                                df.loc[k,'filled'] = df.loc[j,'filled']
+                if str(df.loc[i,'filled']) != 'nan':
+                    for j in range(i+2,len(df)):
+                        if str(df.loc[j,'filled']) != 'nan':
+                            Ratio = fuzz.ratio(str(df.loc[i,'filled']),str(df.loc[j,'filled']))
+                            if Ratio >= 95:
+                                for k in range(i+1,j):
+                                    df.loc[k,'filled'] = df.loc[j,'filled']
+                            else:
+                                break
             
             df.to_csv(file, encoding="utf-8")
                 
